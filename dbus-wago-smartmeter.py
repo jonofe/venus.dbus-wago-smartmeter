@@ -60,7 +60,7 @@ class DbusDummyService:
     meter_url = "http://" + EDOMI_IP + "/wago.json"
     meter_r = requests.get(url=meter_url) # request data from the Fronius PV inverter
     meter_data = meter_r.json() # convert JSON data
-    pprint(meter_data)
+    #pprint(meter_data)
     meter_consumption = meter_data['PowerReal_P_Sum']
     self._dbusservice['/Ac/Power'] = meter_consumption # positive: consumption, negative: feed into grid
     self._dbusservice['/Ac/L1/Voltage'] = meter_data['Voltage_L1']
