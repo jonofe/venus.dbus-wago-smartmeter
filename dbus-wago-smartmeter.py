@@ -78,8 +78,8 @@ class DbusDummyService:
     self._dbusservice['/Ac/L3/Power'] = meter_data['PowerReal_L3']
 #    self._dbusservice['/Ac/L3/Energy/Forward'] = meter_data['Energy_Forward_L3']
 #    self._dbusservice['/Ac/L3/Energy/Reverse'] = meter_data['Energy_Reverse_L3']
-    self._dbusservice['/Ac/Energy/Forward'] = float(meter_data['EnergyReal_WAC_Sum_Consumed'])/1000
-    self._dbusservice['/Ac/Energy/Reverse'] = float(meter_data['EnergyReal_WAC_Sum_Produced'])/1000
+    self._dbusservice['/Ac/Energy/Forward'] = float(meter_data['EnergyReal_WAC_Sum_Consumed'])
+    self._dbusservice['/Ac/Energy/Reverse'] = float(meter_data['EnergyReal_WAC_Sum_Produced'])
     logging.info("House Consumption: {:.0f}".format(meter_consumption))
 #    except:
 #      logging.info("WARNING: Could not read from EDOMI WAGO LBS")
