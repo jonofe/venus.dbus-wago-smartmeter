@@ -56,39 +56,39 @@ class DbusDummyService:
     gobject.timeout_add(200, self._update) # pause 200ms before the next request
 
   def _update(self):
-    try:
-      meter_url = "http://" + EDOMI_IP + "/wago.json"
-      meter_r = requests.get(url=meter_url) # request data from the Fronius PV inverter
-      meter_data = meter_r.json() # convert JSON data
-      pprint(meter_data)
-      meter_consumption = meter_data['PowerReal_P_Sum']
-      self._dbusservice['/Ac/Power'] = meter_consumption # positive: consumption, negative: feed into grid
-      self._dbusservice['/Ac/L1/Voltage'] = meter_data['Voltage_L1']
-      self._dbusservice['/Ac/L1/Current'] = meter_data['Current_L1']
-      self._dbusservice['/Ac/L1/Power'] = meter_data['PowerReal_L1']
-      self._dbusservice['/Ac/L1/Energy/Forward'] = meter_data['Energy_Forward_L1']
-      self._dbusservice['/Ac/L1/Energy/Reverse'] = meter_data['Energy_Reverse_L1']
-      self._dbusservice['/Ac/L2/Voltage'] = meter_data['Voltage_L2']
-      self._dbusservice['/Ac/L2/Current'] = meter_data['Current_L2']
-      self._dbusservice['/Ac/L2/Power'] = meter_data['PowerReal_L2']
-      self._dbusservice['/Ac/L2/Energy/Forward'] = meter_data['Energy_Forward_L2']
-      self._dbusservice['/Ac/L2/Energy/Reverse'] = meter_data['Energy_Reverse_L2']
-      self._dbusservice['/Ac/L3/Voltage'] = meter_data['Voltage_L3']
-      self._dbusservice['/Ac/L3/Current'] = meter_data['Current_L3']
-      self._dbusservice['/Ac/L3/Power'] = meter_data['PowerReal_L3']
-      self._dbusservice['/Ac/L3/Energy/Forward'] = meter_data['Energy_Forward_L3']
-      self._dbusservice['/Ac/L3/Energy/Reverse'] = meter_data['Energy_Reverse_L3']
-      self._dbusservice['/Ac/Energy/Forward'] = float(meter_data['EnergyReal_WAC_Sum_Consumed'])/1000
-      self._dbusservice['/Ac/Energy/Reverse'] = float(meter_data['EnergyReal_WAC_Sum_Produced'])/1000
-      logging.info("House Consumption: {:.0f}".format(meter_consumption))
-    except:
-      logging.info("WARNING: Could not read from EDOMI WAGO LBS")
-      self._dbusservice['/Ac/Power'] = 0  # TODO: any better idea to signal an issue?
+#    try:
+    meter_url = "http://" + EDOMI_IP + "/wago.json"
+    meter_r = requests.get(url=meter_url) # request data from the Fronius PV inverter
+    meter_data = meter_r.json() # convert JSON data
+    pprint(meter_data)
+    meter_consumption = meter_data['PowerReal_P_Sum']
+    self._dbusservice['/Ac/Power'] = meter_consumption # positive: consumption, negative: feed into grid
+    self._dbusservice['/Ac/L1/Voltage'] = meter_data['Voltage_L1']
+    self._dbusservice['/Ac/L1/Current'] = meter_data['Current_L1']
+    self._dbusservice['/Ac/L1/Power'] = meter_data['PowerReal_L1']
+    self._dbusservice['/Ac/L1/Energy/Forward'] = meter_data['Energy_Forward_L1']
+    self._dbusservice['/Ac/L1/Energy/Reverse'] = meter_data['Energy_Reverse_L1']
+    self._dbusservice['/Ac/L2/Voltage'] = meter_data['Voltage_L2']
+    self._dbusservice['/Ac/L2/Current'] = meter_data['Current_L2']
+    self._dbusservice['/Ac/L2/Power'] = meter_data['PowerReal_L2']
+    self._dbusservice['/Ac/L2/Energy/Forward'] = meter_data['Energy_Forward_L2']
+    self._dbusservice['/Ac/L2/Energy/Reverse'] = meter_data['Energy_Reverse_L2']
+    self._dbusservice['/Ac/L3/Voltage'] = meter_data['Voltage_L3']
+    self._dbusservice['/Ac/L3/Current'] = meter_data['Current_L3']
+    self._dbusservice['/Ac/L3/Power'] = meter_data['PowerReal_L3']
+    self._dbusservice['/Ac/L3/Energy/Forward'] = meter_data['Energy_Forward_L3']
+    self._dbusservice['/Ac/L3/Energy/Reverse'] = meter_data['Energy_Reverse_L3']
+    self._dbusservice['/Ac/Energy/Forward'] = float(meter_data['EnergyReal_WAC_Sum_Consumed'])/1000
+    self._dbusservice['/Ac/Energy/Reverse'] = float(meter_data['EnergyReal_WAC_Sum_Produced'])/1000
+    logging.info("House Consumption: {:.0f}".format(meter_consumption))
+#    except:
+#      logging.info("WARNING: Could not read from EDOMI WAGO LBS")
+#      self._dbusservice['/Ac/Power'] = 0  # TODO: any better idea to signal an issue?
     # increment UpdateIndex - to show that new data is available
     index = self._dbusservice[path_UpdateIndex] + 1  # increment index
     if index > 255:   # maximum value of the index
       index = 0       # overflow from 255 to 0
-    self._dbusservice[path_UpdateIndex] = index
+      self._dbusservice[path_UpdateIndex] = index
     return True
 
   def _handlechangedvalue(self, path, value):
