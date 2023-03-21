@@ -63,6 +63,8 @@ class DbusDummyService:
     #pprint(meter_data)
     meter_consumption = meter_data['PowerReal_P_Sum']
     self._dbusservice['/Ac/Power'] = meter_consumption # positive: consumption, negative: feed into grid
+    self._dbusservice['/Ac/Current'] = 123 # positive: consumption, negative: feed into grid
+    self._dbusservice['/Ac/Voltage'] = 456
     self._dbusservice['/Ac/L1/Voltage'] = meter_data['Voltage_L1']
     self._dbusservice['/Ac/L1/Current'] = meter_data['Current_L1']
     self._dbusservice['/Ac/L1/Power'] = meter_data['PowerReal_L1']
