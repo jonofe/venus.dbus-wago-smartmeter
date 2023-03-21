@@ -63,13 +63,13 @@ class DbusDummyService:
     #pprint(meter_data)
     meter_consumption = meter_data['PowerReal_P_Sum']
     self._dbusservice['/Ac/Power'] = meter_consumption # positive: consumption, negative: feed into grid
-    self._dbusservice['/Ac/Current'] = 123 # positive: consumption, negative: feed into grid
-    self._dbusservice['/Ac/Voltage'] = 456
+#    self._dbusservice['/Ac/Current'] = 123 # positive: consumption, negative: feed into grid
+#    self._dbusservice['/Ac/Voltage'] = 456
     self._dbusservice['/Ac/L1/Voltage'] = meter_data['Voltage_L1']
     self._dbusservice['/Ac/L1/Current'] = meter_data['Current_L1']
     self._dbusservice['/Ac/L1/Power'] = meter_data['PowerReal_L1']
-#    self._dbusservice['/Ac/L1/Energy/Forward'] = meter_data['Energy_Forward_L1']
-#    self._dbusservice['/Ac/L1/Energy/Reverse'] = meter_data['Energy_Reverse_L1']
+#   self._dbusservice['/Ac/L1/Energy/Forward'] = meter_data['Energy_Forward_L1']
+    self._dbusservice['/Ac/L1/Energy'] = meter_data['Energy_Reverse_L1']
     self._dbusservice['/Ac/L2/Voltage'] = meter_data['Voltage_L2']
     self._dbusservice['/Ac/L2/Current'] = meter_data['Current_L2']
     self._dbusservice['/Ac/L2/Power'] = meter_data['PowerReal_L2']
@@ -111,13 +111,15 @@ def main():
     paths={
       '/Ac/Power': {'initial': 0},
       '/Ac/L1/Voltage': {'initial': 0},
-      '/Ac/L2/Voltage': {'initial': 0},
-      '/Ac/L3/Voltage': {'initial': 0},
       '/Ac/L1/Current': {'initial': 0},
-      '/Ac/L2/Current': {'initial': 0},
-      '/Ac/L3/Current': {'initial': 0},
       '/Ac/L1/Power': {'initial': 0},
+      '/Ac/L1/Energy/Forward': {'initial': 0},
+      '/Ac/L1/Energy/Reverse': {'initial': 0},
+      '/Ac/L2/Voltage': {'initial': 0},
+      '/Ac/L2/Current': {'initial': 0},
       '/Ac/L2/Power': {'initial': 0},
+      '/Ac/L3/Voltage': {'initial': 0},
+      '/Ac/L3/Current': {'initial': 0},
       '/Ac/L3/Power': {'initial': 0},
       '/Ac/Energy/Forward': {'initial': 0}, # energy bought from the grid
       '/Ac/Energy/Reverse': {'initial': 0}, # energy sold to the grid
