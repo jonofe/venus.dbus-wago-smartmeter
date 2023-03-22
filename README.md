@@ -14,9 +14,9 @@ In the Python file, you should put the IP of your EDOMI Server that hosts the WA
 
 1. Copy the files to the /data folder on your venus:
 
-   - /data/dbus-fronius-smartmeter/dbus-wago-smartmeter.py
-   - /data/dbus-fronius-smartmeter/kill_me.sh
-   - /data/dbus-fronius-smartmeter/service/run
+   - /data/dbus-wago-smartmeter/dbus-wago-smartmeter.py
+   - /data/dbus-wago-smartmeter/kill_me.sh
+   - /data/dbus-wago-smartmeter/service/run
 
 2. Set permissions for files:
 
@@ -26,8 +26,8 @@ In the Python file, you should put the IP of your EDOMI Server that hosts the WA
 
 3. Get two files from the [velib_python](https://github.com/victronenergy/velib_python) and install them on your venus:
 
-   - /data/dbus-fronius-smartmeter/vedbus.py
-   - /data/dbus-fronius-smartmeter/ve_utils.py
+   - /data/dbus-wago-smartmeter/vedbus.py
+   - /data/dbus-wago-smartmeter/ve_utils.py
 
 4. Add a symlink to the file /data/rc.local:
 
