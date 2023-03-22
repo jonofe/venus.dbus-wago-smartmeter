@@ -28,9 +28,10 @@ from vedbus import VeDbusService
 
 path_UpdateIndex = '/UpdateIndex'
 
+logging.basicConfig(filename='/var/log/dbus-wago-smartmeter.log', level=logging.DEBUG)
 
 class DbusDummyService:
-  def __init__(self, servicename, deviceinstance, paths, productname='WAGO Smart Meter', connection='WAGO Smart Meter service'):
+  def __init__(self, servicename, deviceinstance, paths, productname='WAGO 4PS/4PU Smart Meter', connection='EDOMI WAGO LBS'):
     self._dbusservice = VeDbusService(servicename)
     self._paths = paths
 
@@ -45,8 +46,8 @@ class DbusDummyService:
     self._dbusservice.add_path('/DeviceInstance', deviceinstance)
     self._dbusservice.add_path('/ProductId', 16) # value used in ac_sensor_bridge.cpp of dbus-cgwacs
     self._dbusservice.add_path('/ProductName', productname)
-    self._dbusservice.add_path('/FirmwareVersion', 0.1)
-    self._dbusservice.add_path('/HardwareVersion', 0)
+    self._dbusservice.add_path('/FirmwareVersion', 1.0)
+    self._dbusservice.add_path('/HardwareVersion', 'RPi')
     self._dbusservice.add_path('/Connected', 1)
 
     for path, settings in self._paths.items():
@@ -61,27 +62,27 @@ class DbusDummyService:
     meter_r = requests.get(url=meter_url) # request data from the Fronius PV inverter
     meter_data = meter_r.json() # convert JSON data
     #pprint(meter_data)
-    meter_consumption = meter_data['PowerReal_P_Sum']
-    self._dbusservice['/Ac/Power'] = meter_consumption # positive: consumption, negative: feed into grid
-#    self._dbusservice['/Ac/Current'] = 123 # positive: consumption, negative: feed into grid
-#    self._dbusservice['/Ac/Voltage'] = 456
+    meter_consumption = meter_data['Power']
+    self._dbusservice['/Ac/Power'] = meter_consumption
+    self._dbusservice['/Ac/Current'] = meter_data['Current']
+    self._dbusservice['/Ac/Voltage'] = meter_data['Voltage']
+    self._dbusservice['/Ac/Energy/Forward'] = float(meter_data['Energy_Forward'])
+    self._dbusservice['/Ac/Energy/Reverse'] = float(meter_data['Energy_Reverse'])
     self._dbusservice['/Ac/L1/Voltage'] = meter_data['Voltage_L1']
     self._dbusservice['/Ac/L1/Current'] = meter_data['Current_L1']
-    self._dbusservice['/Ac/L1/Power'] = meter_data['PowerReal_L1']
-#   self._dbusservice['/Ac/L1/Energy/Forward'] = meter_data['Energy_Forward_L1']
-    self._dbusservice['/Ac/L1/Energy'] = meter_data['Energy_Reverse_L1']
+    self._dbusservice['/Ac/L1/Power'] = meter_data['Power_L1']
+    self._dbusservice['/Ac/L1/Energy/Forward'] = meter_data['Energy_Forward_L1']
+    self._dbusservice['/Ac/L1/Energy/Reverse'] = meter_data['Energy_Reverse_L1']
     self._dbusservice['/Ac/L2/Voltage'] = meter_data['Voltage_L2']
     self._dbusservice['/Ac/L2/Current'] = meter_data['Current_L2']
-    self._dbusservice['/Ac/L2/Power'] = meter_data['PowerReal_L2']
-#    self._dbusservice['/Ac/L2/Energy/Forward'] = meter_data['Energy_Forward_L2']
-#    self._dbusservice['/Ac/L2/Energy/Reverse'] = meter_data['Energy_Reverse_L2']
+    self._dbusservice['/Ac/L2/Power'] = meter_data['Power_L2']
+    self._dbusservice['/Ac/L2/Energy/Forward'] = meter_data['Energy_Forward_L2']
+    self._dbusservice['/Ac/L2/Energy/Reverse'] = meter_data['Energy_Reverse_L2']
     self._dbusservice['/Ac/L3/Voltage'] = meter_data['Voltage_L3']
     self._dbusservice['/Ac/L3/Current'] = meter_data['Current_L3']
-    self._dbusservice['/Ac/L3/Power'] = meter_data['PowerReal_L3']
-#    self._dbusservice['/Ac/L3/Energy/Forward'] = meter_data['Energy_Forward_L3']
-#    self._dbusservice['/Ac/L3/Energy/Reverse'] = meter_data['Energy_Reverse_L3']
-    self._dbusservice['/Ac/Energy/Forward'] = float(meter_data['EnergyReal_WAC_Sum_Consumed'])
-    self._dbusservice['/Ac/Energy/Reverse'] = float(meter_data['EnergyReal_WAC_Sum_Produced'])
+    self._dbusservice['/Ac/L3/Power'] = meter_data['Power_L3']
+    self._dbusservice['/Ac/L3/Energy/Forward'] = meter_data['Energy_Forward_L3']
+    self._dbusservice['/Ac/L3/Energy/Reverse'] = meter_data['Energy_Reverse_L3']
     logging.info("House Consumption: {:.0f}".format(meter_consumption))
 #    except:
 #      logging.info("WARNING: Could not read from EDOMI WAGO LBS")
@@ -110,6 +111,8 @@ def main():
     deviceinstance=0,
     paths={
       '/Ac/Power': {'initial': 0},
+      '/Ac/Voltage': {'initial': 0},
+      '/Ac/Current': {'initial': 0},
       '/Ac/L1/Voltage': {'initial': 0},
       '/Ac/L1/Current': {'initial': 0},
       '/Ac/L1/Power': {'initial': 0},
@@ -118,9 +121,13 @@ def main():
       '/Ac/L2/Voltage': {'initial': 0},
       '/Ac/L2/Current': {'initial': 0},
       '/Ac/L2/Power': {'initial': 0},
+      '/Ac/L2/Energy/Forward': {'initial': 0},
+      '/Ac/L2/Energy/Reverse': {'initial': 0},
       '/Ac/L3/Voltage': {'initial': 0},
       '/Ac/L3/Current': {'initial': 0},
       '/Ac/L3/Power': {'initial': 0},
+      '/Ac/L3/Energy/Forward': {'initial': 0},
+      '/Ac/L3/Energy/Reverse': {'initial': 0},
       '/Ac/Energy/Forward': {'initial': 0}, # energy bought from the grid
       '/Ac/Energy/Reverse': {'initial': 0}, # energy sold to the grid
       path_UpdateIndex: {'initial': 0},

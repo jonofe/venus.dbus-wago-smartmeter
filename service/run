@@ -1,3 +1,2 @@
 #!/bin/sh
 python /data/dbus-wago-smartmeter/dbus-wago-smartmeter.py
-
